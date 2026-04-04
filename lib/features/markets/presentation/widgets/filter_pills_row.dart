@@ -42,12 +42,12 @@ class FilterPillsRow extends StatelessWidget {
               duration: const Duration(milliseconds: 150),
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: isActive ? AppColors.green : AppColors.white,
+                color: isActive ? AppColors.navy : AppColors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isActive ? AppColors.green : AppColors.border,
+                  color: isActive ? AppColors.navy : AppColors.border,
                 ),
-                boxShadow: isActive ? AppShadows.greenGlow : AppShadows.sm,
+                boxShadow: isActive ? AppShadows.navyGlow : AppShadows.sm,
               ),
               child: Text(
                 label,

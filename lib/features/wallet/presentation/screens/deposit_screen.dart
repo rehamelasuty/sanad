@@ -76,7 +76,7 @@ class _DepositScreenState extends State<DepositScreen> {
                         child: Container(
                           width: 2,
                           height: 24.h,
-                          color: AppColors.green,
+                          color: AppColors.navy,
                         ),
                       ),
                     ],
@@ -104,7 +104,7 @@ class _DepositScreenState extends State<DepositScreen> {
                               child: Text(
                                 '+$amt',
                                 style: AppTextStyles.labelSm
-                                    .copyWith(color: AppColors.green),
+                                    .copyWith(color: AppColors.navy),
                               ),
                             ),
                           ),
@@ -137,12 +137,12 @@ class _DepositScreenState extends State<DepositScreen> {
                           padding: EdgeInsets.all(12.r),
                           decoration: BoxDecoration(
                             color: selected
-                                ? AppColors.greenLite
+                                ? const Color(0x060D1B2E)
                                 : AppColors.bgApp,
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
                               color: selected
-                                  ? AppColors.green
+                                  ? AppColors.navy
                                   : AppColors.border,
                               width: selected ? 2 : 1,
                             ),
@@ -182,7 +182,7 @@ class _DepositScreenState extends State<DepositScreen> {
                               SizedBox(width: 8.w),
                               if (selected)
                                 Icon(Icons.check_circle_rounded,
-                                    color: AppColors.green, size: 18.r),
+                                    color: AppColors.navy, size: 18.r),
                             ],
                           ),
                         ),

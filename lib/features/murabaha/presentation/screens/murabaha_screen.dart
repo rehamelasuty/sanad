@@ -91,7 +91,7 @@ class _MurabahaView extends StatelessWidget {
             },
             child: Text(
               'حسناً',
-              style: TextStyle(color: AppColors.green),
+              style: TextStyle(color: AppColors.navy),
             ),
           ),
         ],

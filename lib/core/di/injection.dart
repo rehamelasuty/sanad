@@ -56,6 +56,22 @@ import '../../features/trade/domain/repositories/trade_repository.dart';
 import '../../features/trade/domain/usecases/get_stock_detail_usecase.dart';
 import '../../features/trade/domain/usecases/place_order_usecase.dart';
 import '../../features/trade/presentation/cubit/trade_cubit.dart';
+import '../../features/dca/data/datasources/dca_local_datasource.dart';
+import '../../features/dca/data/repositories/dca_repository_impl.dart';
+import '../../features/dca/domain/repositories/dca_repository.dart';
+import '../../features/dca/domain/usecases/dca_plan_usecases.dart';
+import '../../features/dca/domain/usecases/get_dca_plans_usecase.dart';
+import '../../features/dca/presentation/cubit/dca_cubit.dart';
+import '../../features/price_alerts/data/datasources/price_alerts_local_datasource.dart';
+import '../../features/price_alerts/data/repositories/price_alerts_repository_impl.dart';
+import '../../features/price_alerts/domain/repositories/price_alerts_repository.dart';
+import '../../features/price_alerts/domain/usecases/price_alert_usecases.dart';
+import '../../features/price_alerts/presentation/cubit/price_alerts_cubit.dart';
+import '../../features/market_feed/data/datasources/market_websocket_datasource.dart';
+import '../../features/market_feed/data/repositories/market_feed_repository_impl.dart';
+import '../../features/market_feed/domain/repositories/market_feed_repository.dart';
+import '../../features/market_feed/domain/usecases/market_feed_usecases.dart';
+import '../../features/market_feed/presentation/cubit/market_feed_cubit.dart';
 import '../network/api_service.dart';
 import '../network/dio_client.dart';
 
@@ -73,6 +89,9 @@ Future<void> configureDependencies() async {
   _registerStatement();
   _registerIpo();
   _registerFunds();
+  _registerDca();
+  _registerPriceAlerts();
+  _registerMarketFeed();
 }
 
 void _registerCore() {
@@ -227,5 +246,70 @@ void _registerFunds() {
   getIt.registerFactory(() => GetFundsUseCase(getIt()));
   getIt.registerFactory(
     () => FundsCubit(getFunds: getIt()),
+  );
+}
+
+void _registerDca() {
+  getIt.registerLazySingleton<DcaLocalDataSource>(
+    () => DcaLocalDataSource(),
+  );
+  getIt.registerLazySingleton<DcaRepository>(
+    () => DcaRepositoryImpl(getIt()),
+  );
+  getIt.registerFactory(() => GetDcaPlansUseCase(getIt()));
+  getIt.registerFactory(() => CreateDcaPlanUseCase(getIt()));
+  getIt.registerFactory(() => ToggleDcaPlanUseCase(getIt()));
+  getIt.registerFactory(
+    () => DcaCubit(
+      getPlans: getIt(),
+      createPlan: getIt(),
+      togglePlan: getIt(),
+    ),
+  );
+}
+
+void _registerPriceAlerts() {
+  getIt.registerLazySingleton<PriceAlertsLocalDatasource>(
+    () => PriceAlertsLocalDatasourceImpl(),
+  );
+  getIt.registerLazySingleton<PriceAlertsRepository>(
+    () => PriceAlertsRepositoryImpl(getIt()),
+  );
+  getIt.registerFactory(() => GetAlertsUseCase(getIt()));
+  getIt.registerFactory(() => CreateAlertUseCase(getIt()));
+  getIt.registerFactory(() => ToggleAlertUseCase(getIt()));
+  getIt.registerFactory(() => DeleteAlertUseCase(getIt()));
+  getIt.registerFactory(
+    () => PriceAlertsCubit(
+      getAlerts: getIt(),
+      createAlert: getIt(),
+      toggleAlert: getIt(),
+      deleteAlert: getIt(),
+    ),
+  );
+}
+
+void _registerMarketFeed() {
+  // Datasource: singleton — owns the WebSocket + background Isolate lifetime.
+  getIt.registerLazySingleton<MarketWebSocketDatasource>(
+    () => MarketWebSocketDatasource(),
+  );
+  // Repository: singleton — wraps datasource, exposes domain streams.
+  getIt.registerLazySingleton<MarketFeedRepository>(
+    () => MarketFeedRepositoryImpl(getIt()),
+  );
+  // Use-cases: factories — stateless, safe to recreate.
+  getIt.registerFactory(() => ConnectToFeedUseCase(getIt()));
+  getIt.registerFactory(() => WatchTicksUseCase(getIt()));
+  getIt.registerFactory(() => WatchConnectionStatusUseCase(getIt()));
+  getIt.registerFactory(() => DisconnectFromFeedUseCase(getIt()));
+  // Cubit: factory — each screen push gets a fresh instance.
+  getIt.registerFactory(
+    () => MarketFeedCubit(
+      connect:              getIt(),
+      disconnect:           getIt(),
+      watchTicks:           getIt(),
+      watchConnectionStatus: getIt(),
+    ),
   );
 }

@@ -45,7 +45,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             onPressed: () => context.read<NotificationsCubit>().markAllRead(),
             child: Text(
               'قراءة الكل',
-              style: AppTextStyles.caption.copyWith(color: AppColors.green),
+              style: AppTextStyles.caption.copyWith(color: AppColors.navy),
             ),
           ),
         ],
@@ -54,7 +54,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         builder: (context, state) {
           if (state is NotificationsLoading) {
             return const Center(
-                child: CircularProgressIndicator(color: AppColors.green));
+                child: CircularProgressIndicator(color: AppColors.navy));
           }
           if (state is NotificationsError) {
             return Center(
@@ -102,10 +102,10 @@ class _NotificationCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: item.isRead ? AppColors.bgApp : AppColors.greenLite,
+        color: item.isRead ? AppColors.bgApp : const Color(0x060D1B2E),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: item.isRead ? AppColors.border : AppColors.green.withOpacity(0.3),
+          color: item.isRead ? AppColors.border : AppColors.navy.withValues(alpha: 0.15),
         ),
       ),
       child: Row(
@@ -118,7 +118,7 @@ class _NotificationCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: item.isRead
                   ? AppColors.bgPage
-                  : AppColors.green.withOpacity(0.15),
+                  : AppColors.navy.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(10.r),
             ),
             alignment: Alignment.center,
@@ -148,7 +148,7 @@ class _NotificationCard extends StatelessWidget {
                         width: 8.r,
                         height: 8.r,
                         decoration: BoxDecoration(
-                          color: AppColors.green,
+                          color: AppColors.navy,
                           shape: BoxShape.circle,
                         ),
                       ),

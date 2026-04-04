@@ -1,0 +1,11 @@
+name: market_server
+description: Real-time market data simulator — WebSocket server for sanad app
+version: 1.0.0
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+
+dependencies:
+  shelf: ^1.4.1
+  shelf_web_socket: ^2.0.0
+  web_socket_channel: ^3.0.1

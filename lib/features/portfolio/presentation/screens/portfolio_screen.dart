@@ -60,7 +60,7 @@ class _PortfolioContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: AppColors.green,
+      color: AppColors.navy,
       onRefresh: () => context.read<PortfolioCubit>().refresh(),
       child: CustomScrollView(
         slivers: [
@@ -150,7 +150,7 @@ class _SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: AppColors.heroGradient,
         borderRadius: AppRadius.lgAll,
-        boxShadow: AppShadows.greenGlow,
+        boxShadow: AppShadows.heroCard,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,11 +310,11 @@ class _HoldingsHeader extends StatelessWidget {
           DropdownButtonHideUnderline(
             child: DropdownButton<HoldingSortOrder>(
               value: currentSort,
-              style: AppTextStyles.labelMd.copyWith(color: AppColors.green),
+              style: AppTextStyles.labelMd.copyWith(color: AppColors.navy),
               icon: Icon(
                 Icons.sort_rounded,
                 size: 18.r,
-                color: AppColors.green,
+                color: AppColors.navy,
               ),
               items: HoldingSortOrder.values
                   .map(

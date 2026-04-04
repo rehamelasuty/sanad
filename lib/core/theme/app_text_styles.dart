@@ -165,7 +165,7 @@ abstract class AppTextStyles {
   static TextStyle get sectionAction => _sans(
         size: 12.sp,
         weight: FontWeight.w500,
-        color: AppColors.green,
+        color: AppColors.navy,
       );
 
   // ── Buttons ───────────────────────────────────

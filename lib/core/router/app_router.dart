@@ -3,6 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/screens/feature_shariah_screen.dart';
+import '../../features/market_feed/presentation/cubit/market_feed_cubit.dart';
+import '../../features/market_feed/presentation/screens/market_feed_screen.dart';
+import '../../features/dca/presentation/cubit/dca_cubit.dart';
+import '../../features/dca/presentation/screens/dca_screen.dart';
+import '../../features/price_alerts/presentation/cubit/price_alerts_cubit.dart';
+import '../../features/price_alerts/presentation/screens/price_alerts_screen.dart';
 import '../../features/auth/presentation/screens/feature_zero_commission_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_screen.dart';
@@ -194,6 +200,33 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.deposit,
         builder: (_, __) => const DepositScreen(),
+      ),
+
+      // DCA
+      GoRoute(
+        path: AppRoutes.dca,
+        builder: (context, state) => BlocProvider(
+          create: (_) => getIt<DcaCubit>()..loadPlans(),
+          child: const DcaScreen(),
+        ),
+      ),
+
+      // Price Alerts
+      GoRoute(
+        path: AppRoutes.priceAlerts,
+        builder: (context, state) => BlocProvider(
+          create: (_) => getIt<PriceAlertsCubit>()..loadAlerts(),
+          child: const PriceAlertsScreen(),
+        ),
+      ),
+
+      // Real-time market feed
+      GoRoute(
+        path: AppRoutes.marketFeed,
+        builder: (context, state) => BlocProvider(
+          create: (_) => getIt<MarketFeedCubit>(),
+          child: const MarketFeedScreen(),
+        ),
       ),
 
       // Onboarding feature highlights

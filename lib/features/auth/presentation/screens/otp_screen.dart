@@ -165,7 +165,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     borderRadius: BorderRadius.circular(12.r),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.greenGlow,
+                        color: AppColors.navyGlow,
                         blurRadius: 14,
                         offset: const Offset(0, 4),
                       ),

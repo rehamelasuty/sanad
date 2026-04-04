@@ -103,8 +103,8 @@ class _ChartPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.green.withValues(alpha: 0.15),
-            AppColors.green.withValues(alpha: 0.0),
+            AppColors.navy.withValues(alpha: 0.12),
+            AppColors.navy.withValues(alpha: 0.0),
           ],
         ).createShader(Rect.fromLTWH(0, 0, size.width, size.height)),
     );
@@ -118,7 +118,7 @@ class _ChartPainter extends CustomPainter {
     canvas.drawPath(
       linePath,
       Paint()
-        ..color = AppColors.green
+        ..color = AppColors.navy
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
@@ -127,11 +127,11 @@ class _ChartPainter extends CustomPainter {
 
     // Dot at end
     final last = offsets.last;
-    canvas.drawCircle(last, 3.5, Paint()..color = AppColors.green);
+    canvas.drawCircle(last, 3.5, Paint()..color = AppColors.navy);
     canvas.drawCircle(
       last,
       7,
-      Paint()..color = AppColors.green.withValues(alpha: 0.15),
+      Paint()..color = AppColors.navy.withValues(alpha: 0.12),
     );
   }
 

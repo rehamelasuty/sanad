@@ -35,7 +35,7 @@ class AppButton extends StatelessWidget {
               ? AppColors.primaryGradient
               : LinearGradient(colors: [color!, color!]),
           borderRadius: AppRadius.smAll,
-          boxShadow: AppShadows.greenGlow,
+          boxShadow: AppShadows.navyGlow,
         ),
         alignment: Alignment.center,
         child: isLoading

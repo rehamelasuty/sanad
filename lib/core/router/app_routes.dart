@@ -28,10 +28,15 @@ abstract class AppRoutes {
   static const String featureShariah = '/onboarding/shariah';
 
   // Features
+  static const String dca = '/dca';
+  static const String priceAlerts = '/price-alerts';
   static const String orders = '/orders';
   static const String notifications = '/notifications';
   static const String statement = '/statement';
   static const String ipo = '/ipo';
   static const String funds = '/funds';
   static const String deposit = '/deposit';
+
+  // Real-time market feed
+  static const String marketFeed = '/market-feed';
 }

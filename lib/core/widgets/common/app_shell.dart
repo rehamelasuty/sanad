@@ -14,7 +14,7 @@ class AppShell extends StatelessWidget {
 
   static const _tabs = [
     AppRoutes.home,
-    AppRoutes.markets,
+    AppRoutes.marketFeed,
     '', // trade – special centre button
     AppRoutes.portfolio,
     AppRoutes.profile,
@@ -136,7 +136,7 @@ class _NavItem extends StatelessWidget {
                 shadows: selected
                     ? [
                         const Shadow(
-                          color: AppColors.green,
+                          color: AppColors.navy,
                           blurRadius: 8,
                         )
                       ]
@@ -147,7 +147,7 @@ class _NavItem extends StatelessWidget {
             Text(
               label,
               style: AppTextStyles.caption.copyWith(
-                color: selected ? AppColors.green : AppColors.text3,
+                color: selected ? AppColors.navy : AppColors.text3,
                 fontWeight:
                     selected ? FontWeight.w600 : FontWeight.w400,
               ),
@@ -181,7 +181,7 @@ class _TradeNavItem extends StatelessWidget {
                 gradient: AppColors.primaryGradient,
                 boxShadow: const [
                   BoxShadow(
-                    color: Color(0x590B7A5E),
+                    color: Color(0x590D1B2E),
                     blurRadius: 20,
                     offset: Offset(0, 6),
                   ),

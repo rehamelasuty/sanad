@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_routes.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/theme_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,8 +22,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = context.cs;
+    final isDark = context.watch<ThemeCubit>().isDark;
     return Scaffold(
-      backgroundColor: AppColors.bgPage,
+      backgroundColor: cs.bgPage,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -121,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     trailing: Switch(
                       value: _biometrics,
                       onChanged: (v) => setState(() => _biometrics = v),
-                      activeColor: AppColors.green,
+                      activeColor: AppColors.navy,
                     ),
                     onTap: () {},
                   ),
@@ -150,12 +155,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     trailing: Switch(
                       value: _shariaFilter,
                       onChanged: (v) => setState(() => _shariaFilter = v),
-                      activeColor: AppColors.green,
+                      activeColor: AppColors.navy,
                     ),
                     onTap: () {},
                   ),
                   _SettingItem(
-                    icon: '🌐',
+                    icon: '�',
+                    label: 'الوضع الليلي',
+                    trailing: Switch(
+                      value: isDark,
+                      onChanged: (_) =>
+                          context.read<ThemeCubit>().toggleTheme(),
+                      activeColor: AppColors.navy,
+                    ),
+                    onTap: () {},
+                  ),
+                  _SettingItem(
+                    icon: '�🌐',
                     label: 'اللغة',
                     badge: 'عربي',
                     badgeColor: AppColors.text3,

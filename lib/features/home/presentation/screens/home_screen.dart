@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               HomeLoaded(:final summary, :final watchlist) =>
                 RefreshIndicator(
-                  color: AppColors.green,
+                  color: AppColors.navy,
                   onRefresh: () => context.read<HomeCubit>().refresh(),
                   child: CustomScrollView(
                     slivers: [
@@ -50,14 +50,37 @@ class HomeScreen extends StatelessWidget {
                             HeroPortfolioCard(summary: summary),
                             SizedBox(height: 16.h),
                             QuickActionsWidget(
-                              onDeposit: () {},
-                              onWithdraw: () {},
-                              onOrders: () {},
-                              onStatement: () {},
+                              onDeposit: () => context.push(AppRoutes.deposit),
+                              onWithdraw: () => context.push(AppRoutes.deposit),
+                              onOrders: () => context.push(AppRoutes.orders),
+                              onStatement: () =>
+                                  context.push(AppRoutes.statement),
                             ),
                             SizedBox(height: 14.h),
                             MurabahaBannerWidget(
                               onTap: () => context.go(AppRoutes.murabaha),
+                            ),
+                            SizedBox(height: 10.h),
+                            _FeatureBanner(
+                              icon: '📈',
+                              title: 'الاستثمار الدوري (DCA)',
+                              subtitle:
+                                  'استثمر تلقائياً بمبلغ ثابت كل أسبوع أو شهر',
+                              badge: 'جديد',
+                              badgeColor: AppColors.gold,
+                              badgeLite: AppColors.goldLite,
+                              onTap: () => context.push(AppRoutes.dca),
+                            ),
+                            SizedBox(height: 10.h),
+                            _FeatureBanner(
+                              icon: '🔔',
+                              title: 'تنبيهات الأسعار',
+                              subtitle:
+                                  'احصل على تنبيه فور وصول السهم لسعرك المستهدف',
+                              badge: 'نشط',
+                              badgeColor: AppColors.green,
+                              badgeLite: AppColors.greenLite,
+                              onTap: () => context.push(AppRoutes.priceAlerts),
                             ),
                             SizedBox(height: 4.h),
                             WatchlistSection(
@@ -106,7 +129,7 @@ class _HomeHeader extends StatelessWidget {
                   gradient: AppColors.primaryGradient,
                   boxShadow: const [
                     BoxShadow(
-                      color: AppColors.greenGlow,
+                      color: AppColors.navyGlow,
                       blurRadius: 8,
                       offset: Offset(0, 2),
                     ),
@@ -160,7 +183,7 @@ class _HomeHeader extends StatelessWidget {
                     width: 7.w,
                     height: 7.w,
                     decoration: BoxDecoration(
-                      color: AppColors.green,
+                      color: AppColors.gold,
                       shape: BoxShape.circle,
                       border: Border.all(color: AppColors.white, width: 1.5),
                     ),
@@ -170,6 +193,93 @@ class _HomeHeader extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Feature banner card ──────────────────────────────────────────────────────────
+class _FeatureBanner extends StatelessWidget {
+  const _FeatureBanner({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.badge,
+    required this.badgeColor,
+    required this.badgeLite,
+    required this.onTap,
+  });
+
+  final String icon;
+  final String title;
+  final String subtitle;
+  final String badge;
+  final Color badgeColor;
+  final Color badgeLite;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 22.w),
+        padding: EdgeInsets.all(14.r),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14.r),
+          border: Border.all(color: AppColors.border),
+          boxShadow: AppShadows.sm,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44.r,
+              height: 44.r,
+              decoration: BoxDecoration(
+                color: badgeLite,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              alignment: Alignment.center,
+              child: Text(icon, style: TextStyle(fontSize: 22.sp)),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: AppTextStyles.labelMd
+                          .copyWith(color: AppColors.text1)),
+                  SizedBox(height: 2.h),
+                  Text(subtitle,
+                      style:
+                          AppTextStyles.caption.copyWith(color: AppColors.text3),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Container(
+              padding:
+                  EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
+              decoration: BoxDecoration(
+                color: badgeLite,
+                borderRadius: BorderRadius.circular(20.r),
+                border: Border.all(
+                    color: badgeColor.withValues(alpha: 0.2)),
+              ),
+              child: Text(badge,
+                  style: AppTextStyles.caption.copyWith(
+                      color: badgeColor,
+                      fontWeight: FontWeight.w700)),
+            ),
+            SizedBox(width: 6.w),
+            Icon(Icons.chevron_left_rounded,
+                color: AppColors.text3, size: 18.r),
+          ],
+        ),
       ),
     );
   }

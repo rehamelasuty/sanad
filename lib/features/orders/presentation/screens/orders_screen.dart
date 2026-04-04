@@ -45,7 +45,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         builder: (context, state) {
           if (state is OrdersLoading) {
             return const Center(
-                child: CircularProgressIndicator(color: AppColors.green));
+                child: CircularProgressIndicator(color: AppColors.navy));
           }
           if (state is OrdersError) {
             return Center(
@@ -136,10 +136,10 @@ class _Pill extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
         decoration: BoxDecoration(
-          color: active ? AppColors.green : AppColors.bgPage,
+          color: active ? AppColors.navy : AppColors.bgPage,
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
-              color: active ? AppColors.green : AppColors.border),
+              color: active ? AppColors.navy : AppColors.border),
         ),
         child: Text(
           label,

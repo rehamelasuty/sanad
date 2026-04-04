@@ -54,7 +54,7 @@ class _MarketsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: AppColors.green,
+      color: AppColors.navy,
       onRefresh: () async =>
           context.read<MarketsBloc>().add(const MarketsRefreshRequested()),
       child: CustomScrollView(
@@ -204,7 +204,7 @@ class _PopularScrollRow extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: stock.logoColor != null
-                                  ? Color(stock.logoColor!).withValues(alpha: 0.15)
+                                  ? stock.logoColor!.withValues(alpha: 0.15)
                                   : AppColors.greenLite,
                             ),
                             child: Center(
@@ -216,7 +216,7 @@ class _PopularScrollRow extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                   fontSize: 8.sp,
                                   color: stock.logoColor != null
-                                      ? Color(stock.logoColor!)
+                                      ? stock.logoColor!
                                       : AppColors.green,
                                 ),
                               ),
@@ -309,7 +309,7 @@ class _ExchangeTabRow extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: isActive ? AppColors.green : AppColors.border,
+                      color: isActive ? AppColors.navy : AppColors.border,
                       width: isActive ? 2.0 : 1.0,
                     ),
                   ),
