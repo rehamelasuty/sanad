@@ -39,6 +39,10 @@ dependencies:
   go_router: ^14.6.2
   web_socket_channel: ^3.0.1
 
+  # Realtime (Ably comparison implementation — run `dart pub get` after adding)
+  # Check https://pub.dev/packages/ably_flutter for the latest compatible version.
+  ably_flutter: ^1.2.6
+
   # Charts
   fl_chart: ^0.70.2
 

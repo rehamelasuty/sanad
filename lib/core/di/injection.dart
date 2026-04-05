@@ -72,6 +72,10 @@ import '../../features/market_feed/data/repositories/market_feed_repository_impl
 import '../../features/market_feed/domain/repositories/market_feed_repository.dart';
 import '../../features/market_feed/domain/usecases/market_feed_usecases.dart';
 import '../../features/market_feed/presentation/cubit/market_feed_cubit.dart';
+import '../../features/watchlist/data/datasources/watchlist_local_datasource.dart';
+import '../../features/watchlist/data/repositories/watchlist_repository_impl.dart';
+import '../../features/watchlist/domain/repositories/watchlist_repository.dart';
+import '../../features/watchlist/presentation/cubit/watchlist_cubit.dart';
 import '../network/api_service.dart';
 import '../network/dio_client.dart';
 
@@ -92,6 +96,7 @@ Future<void> configureDependencies() async {
   _registerDca();
   _registerPriceAlerts();
   _registerMarketFeed();
+  _registerWatchlist();
 }
 
 void _registerCore() {
@@ -303,13 +308,26 @@ void _registerMarketFeed() {
   getIt.registerFactory(() => WatchTicksUseCase(getIt()));
   getIt.registerFactory(() => WatchConnectionStatusUseCase(getIt()));
   getIt.registerFactory(() => DisconnectFromFeedUseCase(getIt()));
-  // Cubit: factory — each screen push gets a fresh instance.
-  getIt.registerFactory(
+  // Cubit: lazySingleton — shared across entire app so all screens
+  // share the same live WebSocket stream without reconnecting.
+  getIt.registerLazySingleton(
     () => MarketFeedCubit(
-      connect:              getIt(),
-      disconnect:           getIt(),
-      watchTicks:           getIt(),
+      connect:               getIt(),
+      disconnect:            getIt(),
+      watchTicks:            getIt(),
       watchConnectionStatus: getIt(),
     ),
+  );
+}
+
+void _registerWatchlist() {
+  getIt.registerLazySingleton<WatchlistLocalDatasource>(
+    () => WatchlistLocalDatasourceImpl(),
+  );
+  getIt.registerLazySingleton<WatchlistRepository>(
+    () => WatchlistRepositoryImpl(getIt()),
+  );
+  getIt.registerLazySingleton(
+    () => WatchlistCubit(getIt()),
   );
 }

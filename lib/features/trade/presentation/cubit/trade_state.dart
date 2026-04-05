@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/order.dart';
 import '../../domain/entities/stock_detail.dart';
 
 sealed class TradeState extends Equatable {
@@ -25,6 +26,7 @@ final class TradeLoaded extends TradeState {
     this.quantity = 1.0,
     this.isPlacingOrder = false,
     this.orderSuccess = false,
+    this.placedOrder,
   });
 
   final StockDetail stock;
@@ -33,6 +35,8 @@ final class TradeLoaded extends TradeState {
   final double quantity;
   final bool isPlacingOrder;
   final bool orderSuccess;
+  /// The Order that was just placed; non-null only when [orderSuccess] is true.
+  final Order? placedOrder;
 
   TradeLoaded copyWith({
     StockDetail? stock,
@@ -41,6 +45,8 @@ final class TradeLoaded extends TradeState {
     double? quantity,
     bool? isPlacingOrder,
     bool? orderSuccess,
+    // Use Object? sentinel so callers can explicitly pass null to clear.
+    Object? placedOrder = _sentinel,
   }) =>
       TradeLoaded(
         stock: stock ?? this.stock,
@@ -49,6 +55,8 @@ final class TradeLoaded extends TradeState {
         quantity: quantity ?? this.quantity,
         isPlacingOrder: isPlacingOrder ?? this.isPlacingOrder,
         orderSuccess: orderSuccess ?? this.orderSuccess,
+        placedOrder:
+            placedOrder == _sentinel ? this.placedOrder : placedOrder as Order?,
       );
 
   @override
@@ -59,8 +67,12 @@ final class TradeLoaded extends TradeState {
         quantity,
         isPlacingOrder,
         orderSuccess,
+        placedOrder,
       ];
 }
+
+// Sentinel object to distinguish "not provided" from explicitly null.
+const Object _sentinel = Object();
 
 final class TradeError extends TradeState {
   const TradeError(this.message);

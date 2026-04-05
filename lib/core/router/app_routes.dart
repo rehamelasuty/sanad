@@ -39,4 +39,15 @@ abstract class AppRoutes {
 
   // Real-time market feed
   static const String marketFeed = '/market-feed';
+
+  // ── Investments Shell (nested navigation) ─────
+  static const String investments          = '/investments';
+  static const String investmentsIpo       = '/investments/ipo';
+  static const String investmentsMurabaha  = '/investments/murabaha';
+  static const String investmentsFunds     = '/investments/funds';
+  static const String investmentsStocks    = '/investments/stocks';
+
+  // ── Post-trade / search ────────────────────────
+  static const String orderReceipt = '/order-receipt';
+  static const String stockSearch  = '/stock-search';
 }

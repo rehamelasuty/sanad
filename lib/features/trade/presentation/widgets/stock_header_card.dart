@@ -4,16 +4,30 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/common/sharia_badge.dart';
+import '../../../market_feed/domain/entities/market_tick.dart';
 import '../../domain/entities/stock_detail.dart';
 
 class StockHeaderCard extends StatelessWidget {
-  const StockHeaderCard({super.key, required this.stock});
+  const StockHeaderCard({
+    super.key,
+    required this.stock,
+    this.liveTick,
+  });
 
   final StockDetail stock;
 
+  /// When non-null, live price/change data from the WebSocket feed overrides
+  /// the static values loaded from the data-source.
+  final MarketTick? liveTick;
+
   @override
   Widget build(BuildContext context) {
-    final isPos = stock.isPositive;
+    // Prefer live data from WebSocket when available.
+    final price = liveTick?.price ?? stock.currentPrice;
+    final change = liveTick?.change ?? stock.changeToday;
+    final changePct = liveTick?.changePercent ?? stock.changeTodayPercent;
+
+    final isPos = changePct >= 0;
     final changeColor = isPos ? AppColors.green : AppColors.red;
     final changeSign = isPos ? '+' : '';
     final logoColor =
@@ -56,6 +70,24 @@ class StockHeaderCard extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                         if (stock.isShariaCompliant) const ShariaBadge(),
+                        // Live indicator dot
+                        if (liveTick != null) ...[
+                          SizedBox(width: 6.w),
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: AppColors.green,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          SizedBox(width: 3.w),
+                          Text(
+                            'مباشر',
+                            style: AppTextStyles.caption
+                                .copyWith(color: AppColors.green),
+                          ),
+                        ],
                       ],
                     ),
                   ],
@@ -68,7 +100,7 @@ class StockHeaderCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                stock.currentPrice.toStringAsFixed(2),
+                price.toStringAsFixed(2),
                 style: AppTextStyles.priceDisplay,
               ),
               SizedBox(width: 4.w),
@@ -86,7 +118,7 @@ class StockHeaderCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '$changeSign${stock.changeToday.toStringAsFixed(2)}',
+                    '$changeSign${change.toStringAsFixed(2)}',
                     style: AppTextStyles.monoSm.copyWith(
                       color: changeColor,
                       fontWeight: FontWeight.w700,
@@ -94,7 +126,7 @@ class StockHeaderCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$changeSign${stock.changeTodayPercent.toStringAsFixed(2)}%',
+                    '$changeSign${changePct.toStringAsFixed(2)}%',
                     style: AppTextStyles.monoSm.copyWith(
                       color: changeColor,
                       fontSize: 13.sp,

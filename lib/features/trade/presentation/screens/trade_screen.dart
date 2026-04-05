@@ -6,6 +6,10 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/common/app_loading_error.dart';
+import '../../../market_feed/domain/entities/market_tick.dart';
+import '../../../market_feed/presentation/cubit/market_feed_cubit.dart';
+import '../../../market_feed/presentation/cubit/market_feed_state.dart';
+import '../../../watchlist/presentation/cubit/watchlist_cubit.dart';
 import '../cubit/trade_cubit.dart';
 import '../cubit/trade_state.dart';
 import '../widgets/order_sheet.dart';
@@ -56,7 +60,17 @@ class _TradeView extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(height: 16.h),
-                        StockHeaderCard(stock: stock),
+                        // Live price overlay from WebSocket
+                        BlocSelector<MarketFeedCubit, MarketFeedState,
+                            MarketTick?>(
+                          selector: (s) => s is MarketFeedConnected
+                              ? s.tickMap[stock.symbol]
+                              : null,
+                          builder: (_, liveTick) => StockHeaderCard(
+                            stock: stock,
+                            liveTick: liveTick,
+                          ),
+                        ),
                         SizedBox(height: 20.h),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 22.w),
@@ -119,13 +133,21 @@ class _TradeAppBar extends StatelessWidget {
         onPressed: () => Navigator.of(context).pop(),
       ),
       actions: [
-        IconButton(
-          icon: Icon(
-            Icons.bookmark_border_rounded,
-            size: 22.r,
-            color: AppColors.text2,
-          ),
-          onPressed: () {},
+        BlocBuilder<WatchlistCubit, Set<String>>(
+          builder: (context, watchlist) {
+            final watched = watchlist.contains(symbol);
+            return IconButton(
+              icon: Icon(
+                watched
+                    ? Icons.bookmark_rounded
+                    : Icons.bookmark_border_rounded,
+                size: 22.r,
+                color: watched ? AppColors.gold : AppColors.text2,
+              ),
+              onPressed: () =>
+                  context.read<WatchlistCubit>().toggle(symbol),
+            );
+          },
         ),
       ],
     );

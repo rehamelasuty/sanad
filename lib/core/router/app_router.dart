@@ -15,8 +15,12 @@ import '../../features/auth/presentation/screens/otp_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/funds/presentation/cubit/funds_cubit.dart';
 import '../../features/funds/presentation/screens/funds_screen.dart';
-import '../../features/home/presentation/cubit/home_cubit.dart';
-import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/investments/presentation/screens/investments_funds_screen.dart';
+import '../../features/investments/presentation/screens/investments_holdings_screen.dart';
+import '../../features/investments/presentation/screens/investments_ipo_screen.dart';
+import '../../features/investments/presentation/screens/investments_murabaha_screen.dart';
+import '../../features/investments/presentation/screens/investments_stocks_screen.dart';
+import '../../features/investments/presentation/shell/investments_shell.dart';
 import '../../features/ipo/presentation/cubit/ipo_cubit.dart';
 import '../../features/ipo/presentation/screens/ipo_screen.dart';
 import '../../features/kyc/presentation/screens/kyc_approved_screen.dart';
@@ -25,98 +29,149 @@ import '../../features/kyc/presentation/screens/kyc_id_upload_screen.dart';
 import '../../features/kyc/presentation/screens/kyc_review_screen.dart';
 import '../../features/kyc/presentation/screens/kyc_selfie_screen.dart';
 import '../../features/kyc/presentation/screens/kyc_submitted_screen.dart';
-import '../../features/markets/presentation/bloc/markets_bloc.dart';
-import '../../features/markets/presentation/bloc/markets_event.dart';
-import '../../features/markets/presentation/screens/markets_screen.dart';
-import '../../features/murabaha/presentation/cubit/murabaha_cubit.dart';
-import '../../features/murabaha/presentation/screens/murabaha_screen.dart';
+
 import '../../features/notifications/presentation/cubit/notifications_cubit.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/orders/presentation/cubit/orders_cubit.dart';
 import '../../features/orders/presentation/screens/orders_screen.dart';
-import '../../features/portfolio/presentation/cubit/portfolio_cubit.dart';
-import '../../features/portfolio/presentation/screens/portfolio_screen.dart';
-import '../../features/profile/presentation/screens/profile_screen.dart';
+
 import '../../features/statement/presentation/cubit/statement_cubit.dart';
 import '../../features/statement/presentation/screens/statement_screen.dart';
 import '../../features/trade/presentation/screens/trade_screen.dart';
+import '../../features/trade/presentation/screens/order_receipt_screen.dart';
+import '../../features/trade/domain/entities/order.dart';
+import '../../features/trade/presentation/cubit/trade_cubit.dart';
+import '../../features/investments/presentation/screens/stock_search_screen.dart';
 import '../../features/wallet/presentation/screens/deposit_screen.dart';
 import '../di/injection.dart';
-import '../widgets/common/app_shell.dart';
 import 'app_routes.dart';
 
 class AppRouter {
   AppRouter._();
 
   static final _rootKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-  static final _shellKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
+
+  // ── Investments shell branch keys ──────────────────────────
+  static final _invHoldingsKey =
+      GlobalKey<NavigatorState>(debugLabel: 'inv_holdings');
+  static final _invIpoKey =
+      GlobalKey<NavigatorState>(debugLabel: 'inv_ipo');
+  static final _invMurabahaKey =
+      GlobalKey<NavigatorState>(debugLabel: 'inv_murabaha');
+  static final _invFundsKey =
+      GlobalKey<NavigatorState>(debugLabel: 'inv_funds');
+  static final _invStocksKey =
+      GlobalKey<NavigatorState>(debugLabel: 'inv_stocks');
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootKey,
-    initialLocation: AppRoutes.home,
+    initialLocation: AppRoutes.investments,
     routes: [
-      // ── Shell (bottom nav) ─────────────────────────────────────
-      ShellRoute(
-        navigatorKey: _shellKey,
-        builder: (context, state, child) => AppShell(child: child),
-        routes: [
-          GoRoute(
-            path: AppRoutes.home,
-            pageBuilder: (context, state) => _noTransition(
-              state,
-              BlocProvider(
-                create: (_) => getIt<HomeCubit>()..loadHome(),
-                child: const HomeScreen(),
+      // ── Investments Shell (StatefulShellRoute – 5 tabs) ───
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            InvestmentsShell(navigationShell: navigationShell),
+        branches: [
+          // 0 · المحفظة (holdings overview)
+          StatefulShellBranch(
+            navigatorKey: _invHoldingsKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.investments,
+                pageBuilder: (context, state) => _noTransition(
+                  state,
+                  const InvestmentsHoldingsScreen(),
+                ),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.markets,
-            pageBuilder: (context, state) => _noTransition(
-              state,
-              BlocProvider(
-                create: (_) => getIt<MarketsBloc>()
-                  ..add(const MarketsLoadRequested()),
-                child: const MarketsScreen(),
+
+          // 1 · الاكتتابات (IPO subscriptions)
+          StatefulShellBranch(
+            navigatorKey: _invIpoKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.investmentsIpo,
+                pageBuilder: (context, state) => _noTransition(
+                  state,
+                  const InvestmentsIpoScreen(),
+                ),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.portfolio,
-            pageBuilder: (context, state) => _noTransition(
-              state,
-              BlocProvider(
-                create: (_) => getIt<PortfolioCubit>()..loadPortfolio(),
-                child: const PortfolioScreen(),
+
+          // 2 · المرابحات (Murabaha plans)
+          StatefulShellBranch(
+            navigatorKey: _invMurabahaKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.investmentsMurabaha,
+                pageBuilder: (context, state) => _noTransition(
+                  state,
+                  const InvestmentsMurabahaScreen(),
+                ),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.murabaha,
-            pageBuilder: (context, state) => _noTransition(
-              state,
-              BlocProvider(
-                create: (_) => getIt<MurabahaCubit>()..loadPlans(),
-                child: const MurabahaScreen(),
+
+          // 3 · الصناديق (Funds)
+          StatefulShellBranch(
+            navigatorKey: _invFundsKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.investmentsFunds,
+                pageBuilder: (context, state) => _noTransition(
+                  state,
+                  const InvestmentsFundsScreen(),
+                ),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: AppRoutes.profile,
-            pageBuilder: (context, state) => _noTransition(
-              state,
-              const ProfileScreen(),
-            ),
+
+          // 4 · الأسهم (Stocks browser)
+          StatefulShellBranch(
+            navigatorKey: _invStocksKey,
+            routes: [
+              GoRoute(
+                path: AppRoutes.investmentsStocks,
+                pageBuilder: (context, state) => _noTransition(
+                  state,
+                  const InvestmentsStocksScreen(),
+                ),
+              ),
+            ],
           ),
         ],
       ),
 
-      // ── Full-screen push routes ────────────────────────────────
+      // ── Full-screen push routes ────────────────────────────
       GoRoute(
         path: AppRoutes.trade,
-        builder: (context, state) => TradeScreen(
-          symbol: state.pathParameters['symbol']!,
+        builder: (context, state) => BlocProvider(
+          create: (_) => getIt<TradeCubit>()..loadStock(
+              state.pathParameters['symbol']!),
+          child: TradeScreen(
+            symbol: state.pathParameters['symbol']!,
+          ),
         ),
+      ),
+
+      // Order receipt (shown after trade execution)
+      GoRoute(
+        path: AppRoutes.orderReceipt,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          return OrderReceiptScreen(
+            order: extra['order'] as Order,
+            stockName: extra['stockName'] as String,
+          );
+        },
+      ),
+
+      // Stock search screen
+      GoRoute(
+        path: AppRoutes.stockSearch,
+        builder: (_, __) => const StockSearchScreen(),
       ),
 
       // Auth

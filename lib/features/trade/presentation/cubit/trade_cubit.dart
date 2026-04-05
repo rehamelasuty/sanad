@@ -65,14 +65,18 @@ class TradeCubit extends Cubit<TradeState> {
 
     result.fold(
       (failure) => emit(current.copyWith(isPlacingOrder: false)),
-      (_) => emit(current.copyWith(isPlacingOrder: false, orderSuccess: true)),
+      (order) => emit(current.copyWith(
+        isPlacingOrder: false,
+        orderSuccess: true,
+        placedOrder: order,
+      )),
     );
   }
 
   void dismissOrderSuccess() {
     final current = state;
     if (current is TradeLoaded) {
-      emit(current.copyWith(orderSuccess: false));
+      emit(current.copyWith(orderSuccess: false, placedOrder: null));
     }
   }
 }

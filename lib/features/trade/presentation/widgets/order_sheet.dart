@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_shadows.dart';
@@ -29,8 +31,18 @@ class _OrderSheetState extends State<OrderSheet> {
   Widget build(BuildContext context) {
     return BlocConsumer<TradeCubit, TradeState>(
       listener: (context, state) {
-        if (state is TradeLoaded && state.orderSuccess) {
-          _showSuccessSnackBar(context);
+        if (state is TradeLoaded &&
+            state.orderSuccess &&
+            state.placedOrder != null) {
+          // Navigate to receipt screen — this is a full-screen push on top of
+          // the trade screen; the user can pop back to continue trading.
+          context.push(
+            AppRoutes.orderReceipt,
+            extra: {
+              'order': state.placedOrder!,
+              'stockName': state.stock.name,
+            },
+          );
           context.read<TradeCubit>().dismissOrderSuccess();
         }
       },
@@ -181,24 +193,6 @@ class _OrderSheetState extends State<OrderSheet> {
           ),
         );
       },
-    );
-  }
-
-  void _showSuccessSnackBar(BuildContext context) {
-    final state = context.read<TradeCubit>().state;
-    if (state is! TradeLoaded) return;
-    final isBuy = state.orderSide == OrderSideTab.buy;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isBuy ? 'تم تنفيذ أمر الشراء بنجاح ✓' : 'تم تنفيذ أمر البيع بنجاح ✓',
-          textDirection: TextDirection.rtl,
-        ),
-        backgroundColor: isBuy ? AppColors.green : AppColors.red,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.r)),
-      ),
     );
   }
 }
